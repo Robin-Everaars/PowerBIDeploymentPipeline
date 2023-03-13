@@ -6,16 +6,16 @@
         "replace": {        
           "DatasourceType": "AnalysisServices",
           "ConnectionDetails": {
-            "Server": "asazure://westeurope.asazure.windows.net/bitmapprodanalysisservices001",
-            "Database": "tankersmodel" ,
+            "Server": "",
+            "Database": "" ,
             "Url": null
           }
         } ,
         "replaceWith":  {        
           "DatasourceType": "AnalysisServices",
           "ConnectionDetails": {
-            "Server": "asazure://westeurope.asazure.windows.net/bitmapbtuatanalyssvc",
-            "Database": "tankersmodel" ,
+            "Server": "",
+            "Database": "" ,
             "Url": null
           }
         }
@@ -24,16 +24,16 @@
         "replace": {        
           "DatasourceType": "AnalysisServices",
           "ConnectionDetails": {
-            "Server": "asazure://westeurope.asazure.windows.net/bitmapprodanalysisservices001",
-            "Database": "voyagemodel" ,
+            "Server": "",
+            "Database": "" ,
             "Url": null
           }
         } ,
         "replaceWith":  {        
           "DatasourceType": "AnalysisServices",
           "ConnectionDetails": {
-            "Server": "asazure://westeurope.asazure.windows.net/bitmapbtuatanalyssvc",
-            "Database": "voyagemodel" ,
+            "Server": "",
+            "Database": "" ,
             "Url": null
           }
         }
@@ -42,16 +42,16 @@
         "replace": {        
           "DatasourceType": "AnalysisServices",
           "ConnectionDetails": {
-            "Server": "asazure://westeurope.asazure.windows.net/bitmapprodanalysisservices001",
-            "Database": "financemodel" ,
+            "Server": "",
+            "Database": "" ,
             "Url": null
           }
         } ,
         "replaceWith":  {        
           "DatasourceType": "AnalysisServices",
           "ConnectionDetails": {
-            "Server": "asazure://westeurope.asazure.windows.net/bitmapbtuatanalyssvc",
-            "Database": "financemodel" ,
+            "Server": "",
+            "Database": "" ,
             "Url": null
           }
         }
@@ -65,16 +65,16 @@
         "replace": {        
           "DatasourceType": "AnalysisServices",
           "ConnectionDetails": {
-            "Server": "asazure://westeurope.asazure.windows.net/bitmapbtuatanalyssvc",
-            "Database": "tankersmodel" ,
+            "Server": "",
+            "Database": "" ,
             "Url": null
           }
         } ,
         "replaceWith":  {        
           "DatasourceType": "AnalysisServices",
           "ConnectionDetails": {
-            "Server": "asazure://westeurope.asazure.windows.net/bitmapprodanalysisservices001",
-            "Database": "tankersmodel" ,
+            "Server": "",
+            "Database": "" ,
             "Url": null
           }
         }
@@ -83,16 +83,16 @@
         "replace": {        
           "DatasourceType": "AnalysisServices",
           "ConnectionDetails": {
-            "Server": "asazure://westeurope.asazure.windows.net/bitmapbtuatanalyssvc",
-            "Database": "voyagemodel" ,
+            "Server": "",
+            "Database": "" ,
             "Url": null
           }
         } ,
         "replaceWith":  {        
           "DatasourceType": "AnalysisServices",
           "ConnectionDetails": {
-            "Server": "asazure://westeurope.asazure.windows.net/bitmapprodanalysisservices001",
-            "Database": "voyagemodel" ,
+            "Server": "",
+            "Database": "" ,
             "Url": null
           }
         }
@@ -101,16 +101,16 @@
         "replace": {        
           "DatasourceType": "AnalysisServices",
           "ConnectionDetails": {
-            "Server": "asazure://westeurope.asazure.windows.net/bitmapbtuatanalyssvc",
-            "Database": "financemodel" ,
+            "Server": "",
+            "Database": "" ,
             "Url": null
           }
         } ,
         "replaceWith":  {        
           "DatasourceType": "AnalysisServices",
           "ConnectionDetails": {
-            "Server": "asazure://westeurope.asazure.windows.net/bitmapprodanalysisservices001",
-            "Database": "financemodel" ,
+            "Server": "",
+            "Database": "" ,
             "Url": null
           }
         }
