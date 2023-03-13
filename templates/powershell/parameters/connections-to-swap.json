@@ -1,0 +1,120 @@
+[
+  { 
+    "environment": "UAT" ,
+    "connectionsToReplace": [
+      { 
+        "replace": {        
+          "DatasourceType": "AnalysisServices",
+          "ConnectionDetails": {
+            "Server": "asazure://westeurope.asazure.windows.net/bitmapprodanalysisservices001",
+            "Database": "tankersmodel" ,
+            "Url": null
+          }
+        } ,
+        "replaceWith":  {        
+          "DatasourceType": "AnalysisServices",
+          "ConnectionDetails": {
+            "Server": "asazure://westeurope.asazure.windows.net/bitmapbtuatanalyssvc",
+            "Database": "tankersmodel" ,
+            "Url": null
+          }
+        }
+      } ,
+      { 
+        "replace": {        
+          "DatasourceType": "AnalysisServices",
+          "ConnectionDetails": {
+            "Server": "asazure://westeurope.asazure.windows.net/bitmapprodanalysisservices001",
+            "Database": "voyagemodel" ,
+            "Url": null
+          }
+        } ,
+        "replaceWith":  {        
+          "DatasourceType": "AnalysisServices",
+          "ConnectionDetails": {
+            "Server": "asazure://westeurope.asazure.windows.net/bitmapbtuatanalyssvc",
+            "Database": "voyagemodel" ,
+            "Url": null
+          }
+        }
+      } ,
+      { 
+        "replace": {        
+          "DatasourceType": "AnalysisServices",
+          "ConnectionDetails": {
+            "Server": "asazure://westeurope.asazure.windows.net/bitmapprodanalysisservices001",
+            "Database": "financemodel" ,
+            "Url": null
+          }
+        } ,
+        "replaceWith":  {        
+          "DatasourceType": "AnalysisServices",
+          "ConnectionDetails": {
+            "Server": "asazure://westeurope.asazure.windows.net/bitmapbtuatanalyssvc",
+            "Database": "financemodel" ,
+            "Url": null
+          }
+        }
+      }
+    ]
+  } ,
+  { 
+    "environment": "Production" ,
+    "connectionsToReplace": [
+      { 
+        "replace": {        
+          "DatasourceType": "AnalysisServices",
+          "ConnectionDetails": {
+            "Server": "asazure://westeurope.asazure.windows.net/bitmapbtuatanalyssvc",
+            "Database": "tankersmodel" ,
+            "Url": null
+          }
+        } ,
+        "replaceWith":  {        
+          "DatasourceType": "AnalysisServices",
+          "ConnectionDetails": {
+            "Server": "asazure://westeurope.asazure.windows.net/bitmapprodanalysisservices001",
+            "Database": "tankersmodel" ,
+            "Url": null
+          }
+        }
+      } ,
+      { 
+        "replace": {        
+          "DatasourceType": "AnalysisServices",
+          "ConnectionDetails": {
+            "Server": "asazure://westeurope.asazure.windows.net/bitmapbtuatanalyssvc",
+            "Database": "voyagemodel" ,
+            "Url": null
+          }
+        } ,
+        "replaceWith":  {        
+          "DatasourceType": "AnalysisServices",
+          "ConnectionDetails": {
+            "Server": "asazure://westeurope.asazure.windows.net/bitmapprodanalysisservices001",
+            "Database": "voyagemodel" ,
+            "Url": null
+          }
+        }
+      } ,
+      { 
+        "replace": {        
+          "DatasourceType": "AnalysisServices",
+          "ConnectionDetails": {
+            "Server": "asazure://westeurope.asazure.windows.net/bitmapbtuatanalyssvc",
+            "Database": "financemodel" ,
+            "Url": null
+          }
+        } ,
+        "replaceWith":  {        
+          "DatasourceType": "AnalysisServices",
+          "ConnectionDetails": {
+            "Server": "asazure://westeurope.asazure.windows.net/bitmapprodanalysisservices001",
+            "Database": "financemodel" ,
+            "Url": null
+          }
+        }
+      }
+    ]
+  }
+]

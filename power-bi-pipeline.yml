@@ -1,0 +1,59 @@
+##############
+# This pipeline will deploy Power BI reports from the DevOps repository
+# The pipeline is build in such a way that it detects changes in the 'reports' folder
+# It will fetch all changed files and if those files are Power BI reports, it will deploy each of them
+# Reports will be deployed to the UAT and PROD workspaces only
+# The pipeline uses mainly PowerShell scripts for the build and deployment
+##############
+
+trigger:
+ branches:
+   include:
+   - main
+ paths:
+   include:
+   - reports/*
+
+pool:
+  vmImage: 'windows-latest'
+
+name: $(BuildDefinitionName).$(Year:yy)$(DayOfYear)$(rev:.r)
+
+stages:
+- stage: Build
+  jobs:
+  - job: power_bi_artifacts
+    displayName: Create Artifacts for Power BI Reports
+    steps:
+
+    - task: PowerShell@2
+      displayName: Copy Modified files to staging
+      inputs:
+        targetType: 'filePath'
+        filePath: './pipelines/power-bi/templates/powershell/get-pbix-report.ps1'
+        arguments: >
+          -BuildSourcesDirectory $(Build.SourcesDirectory)
+          -BuildArtifactStagingDirectory $(Build.ArtifactStagingDirectory)
+          -BuildDefinitionName $(Build.DefinitionName)
+          -BuildSourceVersion $(Build.SourceVersion)
+      name: check_modified
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact: $(Build.DefinitionName)-$(Build.SourceVersion)'
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: '$(Build.DefinitionName)-$(Build.SourceVersion)'
+        publishLocation: 'Container'
+
+- stage: UAT
+  dependsOn: Build
+  condition: and(eq(dependencies.Build.outputs['power_bi_artifacts.check_modified.FilesChanged'], 'True'), succeeded('Build'))
+  variables:
+    artifactName: $[ stageDependencies.Build.power_bi_artifacts.outputs['check_modified.artifactName'] ]
+
+  jobs:
+  - template: /pipelines/power-bi/templates/power-bi-deployment.yml
+    parameters:
+      environment: UAT
+      artifactName: $(artifactName)
+      workspaceNameSuffix: '_UAT'

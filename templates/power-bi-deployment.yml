@@ -1,0 +1,50 @@
+parameters:
+- name: environment
+  default: ''
+  type: string
+- name: artifactName
+  default: ''
+  type: string
+- name: workspaceNameSuffix
+  default: ''
+  type: string
+
+jobs:
+- job: power_bi_deployment
+  workspace: 
+   clean: all
+  displayName: Deploy Power BI Reports to ${{ parameters.environment }}
+  steps:
+
+  - task: DownloadPipelineArtifact@2
+    displayName: Dowload reports to deploy
+    inputs:
+      buildType: 'current'
+      targetPath: '$(Pipeline.Workspace)'
+
+  - task: Cache@2
+    displayName: Cache PowerShell modules
+    inputs:
+      key:  restoremodules | $(Pipeline.Workspace)/${{ parameters.artifactName }}/pipelines/power-bi/templates/powershell/restore-cachedmodules.ps1
+      path: $(System.DefaultWorkingDirectory)/powershellmodules
+      cacheHitVar: PSModules_IsCached
+
+  - task: PowerShell@2
+    displayName: 'Download Powershell Modules if not cached'
+    condition: ne(variables.PSModules_IsCached, 'true')
+    inputs:
+      targetType: filePath
+      filePath: $(Pipeline.Workspace)/${{ parameters.artifactName }}/pipelines/power-bi/templates/powershell/restore-cachedmodules.ps1
+      arguments: -Path $(System.DefaultWorkingDirectory)/powershellmodules
+      pwsh: true
+
+  - task: PowerShell@2
+    displayName: 'Deploy each Power BI report'
+    inputs:
+      targetType: filePath
+      filePath: $(Pipeline.Workspace)/${{ parameters.artifactName }}/pipelines/power-bi/templates/powershell/deploy-pbix-report.ps1
+      arguments: >
+        -artifactName ${{ parameters.artifactName }}
+        -workspaceNameSuffix ${{ parameters.workspaceNameSuffix }}
+        -environment ${{ parameters.environment }}
+        -updatePowerBIDatasources $false
