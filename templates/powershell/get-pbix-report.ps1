@@ -1,8 +1,6 @@
 param (
     $BuildSourcesDirectory,
-    $BuildArtifactStagingDirectory,
-    $BuildDefinitionName,
-    $BuildSourceVersion
+    $BuildArtifactStagingDirectory
 )
 
 Write-Host "Checking for changed Power BI reports"
@@ -13,38 +11,34 @@ $filesChanged = $changedFiles -split '\r?\n' | Where-Object { $_ -like '*.pbix' 
 $hasPbixFiles = $filesChanged.Count -gt 0
 Write-Host "##vso[task.setvariable variable=FilesChanged;isOutput=true;]$hasPbixFiles"
 
-if ( !$hasPbixFiles ) {
-    Write-Host "##[section]No Power BI changes detected"
+if ( $hasPbixFiles ) {
+    Write-Host "##[section]"$filesChanged.Count "Change(s) found, see changed file(s) below"
+    Write-Output $changedFiles
 
-    return;
-}
+    Write-Host "Copying changed Power BI files to staging directory"
+    foreach ( $changedReport in $changedFiles) { 
+        $sourceFix = $changedReport.replace("/", "\")
 
-Write-Host "##[section]"$filesChanged.Count "Change(s) found, see changed file(s) below"
-Write-Output $changedFiles
+        $folderPath = ($sourceFix.Split("\",3) | Select-Object -Index 0,1) -join "\"
 
-Write-Host "Copying changed Power BI files to staging directory"
-foreach ( $changedReport in $changedFiles) { 
-    $sourceFix = $changedReport.replace("/", "\")
+        $target = $BuildArtifactStagingDirectory + "/" + $folderPath
 
-    $folderPath = ($sourceFix.Split("\",3) | Select-Object -Index 0,1) -join "\"
+        $sourceFolder = $BuildSourcesDirectory + "/" + $sourceFix
 
-    $target = $BuildArtifactStagingDirectory + "/" + $folderPath
+        if ( !(Test-Path -path $target) ) { # Create the target folder if it doesn't exist
+            New-Item -Path $target -ItemType Directory -Force | Out-Null
+        }
 
-    $sourceFolder = $BuildSourcesDirectory + "/" + $sourceFix
-
-    if ( !(Test-Path -path $target) ) { # Create the target folder if it doesn't exist
-        New-Item -Path $target -ItemType Directory -Force | Out-Null
+        Copy-Item -Path $sourceFolder -Destination $target | Out-Null
     }
 
-    Copy-Item -Path $sourceFolder -Destination $target | Out-Null
+    # Copy dependencies
+    Write-Host "Copying dependencies to staging directory"
+    $powerShellFilePath = "pipelines\power-bi\templates\powershell"
+    $sourcePath = "D:\a\1\s\" + $powerShellFilePath
+    $destinationPath = $BuildArtifactStagingDirectory + "\" + $powerShellFilePath
+    Copy-Item -Path $sourcePath -Destination $destinationPath -Recurse
 }
-
-# Copy dependencies
-Write-Host "Copying dependencies to staging directory"
-$powerShellFilePath = "pipelines\power-bi\templates\powershell"
-$sourcePath = "D:\a\1\s\" + $powerShellFilePath
-$destinationPath = $BuildArtifactStagingDirectory + "\" + $powerShellFilePath
-Copy-Item -Path $sourcePath -Destination $destinationPath -Recurse
-
-# Set artifact name
-Write-Host "##vso[task.setvariable variable=artifactName;isOutput=true;]$BuildDefinitionName-$BuildSourceVersion"
+else {
+	Write-Host "##[section]No Power BI changes detected"
+}

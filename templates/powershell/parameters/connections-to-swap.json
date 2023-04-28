@@ -19,84 +19,12 @@
             "Url": null
           }
         }
-      } ,
-      { 
-        "replace": {        
-          "DatasourceType": "AnalysisServices",
-          "ConnectionDetails": {
-            "Server": "",
-            "Database": "" ,
-            "Url": null
-          }
-        } ,
-        "replaceWith":  {        
-          "DatasourceType": "AnalysisServices",
-          "ConnectionDetails": {
-            "Server": "",
-            "Database": "" ,
-            "Url": null
-          }
-        }
-      } ,
-      { 
-        "replace": {        
-          "DatasourceType": "AnalysisServices",
-          "ConnectionDetails": {
-            "Server": "",
-            "Database": "" ,
-            "Url": null
-          }
-        } ,
-        "replaceWith":  {        
-          "DatasourceType": "AnalysisServices",
-          "ConnectionDetails": {
-            "Server": "",
-            "Database": "" ,
-            "Url": null
-          }
-        }
       }
     ]
   } ,
   { 
     "environment": "Production" ,
     "connectionsToReplace": [
-      { 
-        "replace": {        
-          "DatasourceType": "AnalysisServices",
-          "ConnectionDetails": {
-            "Server": "",
-            "Database": "" ,
-            "Url": null
-          }
-        } ,
-        "replaceWith":  {        
-          "DatasourceType": "AnalysisServices",
-          "ConnectionDetails": {
-            "Server": "",
-            "Database": "" ,
-            "Url": null
-          }
-        }
-      } ,
-      { 
-        "replace": {        
-          "DatasourceType": "AnalysisServices",
-          "ConnectionDetails": {
-            "Server": "",
-            "Database": "" ,
-            "Url": null
-          }
-        } ,
-        "replaceWith":  {        
-          "DatasourceType": "AnalysisServices",
-          "ConnectionDetails": {
-            "Server": "",
-            "Database": "" ,
-            "Url": null
-          }
-        }
-      } ,
       { 
         "replace": {        
           "DatasourceType": "AnalysisServices",

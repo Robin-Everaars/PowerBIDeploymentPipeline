@@ -6,7 +6,7 @@ parameters:
   default: ''
   type: string
 - name: workspaceNameSuffix
-  default: ''
+  default: 'null'
   type: string
 
 jobs:
@@ -25,7 +25,7 @@ jobs:
   - task: Cache@2
     displayName: Cache PowerShell modules
     inputs:
-      key:  restoremodules | $(Pipeline.Workspace)/${{ parameters.artifactName }}/pipelines/power-bi/templates/powershell/restore-cachedmodules.ps1
+      key:  restoremodules | $(Build.Repository.LocalPath)/pipelines/power-bi/templates/powershell/restore-cachedmodules.ps1
       path: $(System.DefaultWorkingDirectory)/powershellmodules
       cacheHitVar: PSModules_IsCached
 
@@ -34,7 +34,7 @@ jobs:
     condition: ne(variables.PSModules_IsCached, 'true')
     inputs:
       targetType: filePath
-      filePath: $(Pipeline.Workspace)/${{ parameters.artifactName }}/pipelines/power-bi/templates/powershell/restore-cachedmodules.ps1
+      filePath: $(Build.Repository.LocalPath)/pipelines/power-bi/templates/powershell/restore-cachedmodules.ps1
       arguments: -Path $(System.DefaultWorkingDirectory)/powershellmodules
       pwsh: true
 
@@ -42,7 +42,7 @@ jobs:
     displayName: 'Deploy each Power BI report'
     inputs:
       targetType: filePath
-      filePath: $(Pipeline.Workspace)/${{ parameters.artifactName }}/pipelines/power-bi/templates/powershell/deploy-pbix-report.ps1
+      filePath: $(Build.Repository.LocalPath)/pipelines/power-bi/templates/powershell/deploy-pbix-report.ps1
       arguments: >
         -artifactName ${{ parameters.artifactName }}
         -workspaceNameSuffix ${{ parameters.workspaceNameSuffix }}

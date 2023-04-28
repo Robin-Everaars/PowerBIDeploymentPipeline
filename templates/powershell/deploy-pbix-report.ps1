@@ -1,9 +1,13 @@
 param (
 	$artifactName,
-	$workspaceNameSuffix,
+	$workspaceNameSuffix = '',
 	$environment,
 	$updatePowerBIDatasources
 )
+
+if ( $workspaceNameSuffix -eq 'null' ) {
+	$workspaceNameSuffix = ''
+}
 
 $ErrorActionPreference = "Stop"
 
@@ -23,11 +27,18 @@ Write-Host "##[section]Sign in with Service Principal"
 $clientsec = "$env:clientsecret" | ConvertTo-SecureString -AsPlainText -Force
 $credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $env:clientId, $clientsec
 $tenant = "$env:tenantId"
- 
-Connect-PowerBIServiceAccount `
-	-ServicePrincipal `
-	-Credential $credential `
-	-TenantId $tenant
+
+try {
+	Connect-PowerBIServiceAccount `
+		-ServicePrincipal `
+		-Credential $credential `
+		-TenantId $tenant
+} catch {
+	Write-Host "##[error]Could not login with service account. Please see the error details below."
+	Write-Output $_.Exception
+	Resolve-PowerBIError
+	Throw
+}
 
 Write-Host "##[section]Succesfully Signed in with Service Principal";
 
@@ -44,8 +55,21 @@ foreach ($workspace in $workspaces) {
 
 	Write-Host "##[section]Checking if workspace $workspaceNameWithSuffix exists";
 
-	$workspaceNameWithSuffix = $workspaceNameWithSuffix.ToLower()
-	$pbiWorkspace = Get-PowerBIWorkspace -Filter "tolower(name) eq '$workspaceNameWithSuffix'" -First 1
+	try {
+		$workspaceNameWithSuffix = $workspaceNameWithSuffix.ToLower()
+		$pbiWorkspace = Get-PowerBIWorkspace -Filter "tolower(name) eq '$workspaceNameWithSuffix'" -First 1
+
+		if ( $null -eq $pbiWorkspace ) {
+			Write-Host "[##error]Workspace '$workspaceNameWithSuffix' could not be found."
+	
+			throw
+		}
+	} catch {
+		Write-Host "##[error]Could not get Power BI Workspace. Please see the error details below."
+		Write-Output $_.Exception
+		Resolve-PowerBIError
+		Throw
+	}
 
 	Write-Host "##[section]Found workspace below";
 	Write-Output $pbiWorkspace
@@ -57,36 +81,49 @@ foreach ($workspace in $workspaces) {
 
 		$filePath = "D:\a\1\$artifactName\reports\$workspaceName\" + $report.Name
 
-		$deployedReport = New-PowerBIReport `
-			-Path $filePath `
-			-Name $report.Name.Replace(".pbix" , "") `
-			-ConflictAction "CreateOrOverwrite" `
-			-Workspace $pbiWorkspace
+		try {
+			$deployedReport = New-PowerBIReport `
+				-Path $filePath `
+				-Name $report.Name.Replace(".pbix" , "") `
+				-ConflictAction "CreateOrOverwrite" `
+				-Workspace $pbiWorkspace
+		} catch {
+			Write-Host "##[error]Could not deploy Power BI report. Please see the error details below."
+			Write-Output $_.Exception
+			Resolve-PowerBIError
+			Throw
+		}
 
 		Write-Output $deployedReport
 		
 		if ( $updatePowerBIDatasources ) {
-			Write-Host "Update connections parameter set to false. Skipped update of datasources."
-			Write-Host "##[section]Deploying of Power BI report" $report.Name "completed";
-			return;
+			Write-Host "Changing connections for $environment environment"
+
+			$connectionsToReplaceParameters = "D:\a\1\$artifactName\pipelines\power-bi\templates\powershell\parameters\connections-to-swap.json"
+			$workspaceId = $pbiWorkspace.Id
+			$reportId = $deployedReport.Id
+
+			Write-Host "Environment: $environment"
+			Write-Host "Parameters: $connectionsToReplaceParameters"
+			Write-Host "WorkspaceId: $workspaceId"
+			Write-Host "ReportId: $reportId"
+			
+			try {
+				Update-PowerBIConnection # Definition can be found in functions/UpdatePowerBIConnection.psm1
+					-ConnectionsToReplaceParameters $connectionsToReplaceParameters `
+					-Environment $environment `
+					-ReportId $reportId `
+					-WorkspaceId $workspaceId
+			} catch {
+				Write-Host "##[error]Could not update Power BI connection. Please see the error details below."
+				Write-Output $_.Exception
+				Resolve-PowerBIError
+				Throw
+			}
 		}
-
-		Write-Host "Changing connections for $environment environment"
-
-		$connectionsToReplaceParameters = "D:\a\1\$artifactName\pipelines\power-bi\templates\powershell\parameters\connections-to-swap.json"
-		$workspaceId = $pbiWorkspace.Id
-		$reportId = $deployedReport.Id
-
-		Write-Host "Environment: $environment"
-		Write-Host "Parameters: $connectionsToReplaceParameters"
-		Write-Host "WorkspaceId: $workspaceId"
-		Write-Host "ReportId: $reportId"
-		
-		Update-PowerBIConnection # Definition can be found in functions/UpdatePowerBIConnection.psm1
-			-ConnectionsToReplaceParameters $connectionsToReplaceParameters `
-			-Environment $environment `
-			-ReportId $reportId `
-			-WorkspaceId $workspaceId
+		else {
+			Write-Host "Update connections parameter set to false. Skipped update of datasources."
+		}
 
 		Write-Host "##[section]Deploying of Power BI report" $report.Name "completed";
 	}

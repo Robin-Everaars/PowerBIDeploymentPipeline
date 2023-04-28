@@ -2,8 +2,11 @@ param (
     $Path
 )
 if (-not (Test-Path -Path $Path) ) {
+    Write-Host "Creating folder for module cache."
     $null = New-Item -Path $Path -ItemType Directory
 }
+
+Write-Host "Caching modules."
 Save-Module -Name MicrosoftPowerBIMgmt.Profile -Path $Path
 Save-Module -Name MicrosoftPowerBIMgmt.Workspaces -Path $Path
 Save-Module -Name MicrosoftPowerBIMgmt.Reports -Path $Path
