@@ -109,7 +109,7 @@ foreach ($workspace in $workspaces) {
 			Write-Host "ReportId: $reportId"
 			
 			try {
-				Update-PowerBIConnection # Definition can be found in functions/UpdatePowerBIConnection.psm1
+				Update-PowerBIConnection ` # Definition can be found in functions/UpdatePowerBIConnection.psm1
 					-ConnectionsToReplaceParameters $connectionsToReplaceParameters `
 					-Environment $environment `
 					-ReportId $reportId `
