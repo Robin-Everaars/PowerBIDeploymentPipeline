@@ -70,9 +70,15 @@ function Update-PowerBIConnection {
     Write-Host "##[endgroup]"
 
     Invoke-PowerBIRestMethod `
-        -Url "datasets/$reportDatasetId/Default.UpdateDatasources" `
+        -Url "groups/$workspaceId/datasets/$reportDatasetId/Default.UpdateDatasources" `
         -Method POST `
         -Body $updateBody
+
+    Write-Host "Triggering a Refresh of the Dataset now that connections have been changed."
+    
+    Invoke-PowerBIRestMethod `
+        -Url "groups/$workspaceId/datasets/$reportDatasetId/refreshes" `
+        -Method POST
 }
 
 Export-ModuleMember -Function Update-PowerBIConnection
