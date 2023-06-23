@@ -70,7 +70,7 @@ function Update-PowerBIConnection {
     Write-Host "##[endgroup]"
 
     Invoke-PowerBIRestMethod `
-        -Url "datasets/$reportDatasetId/Default.UpdateDatasources" `
+        -Url "groups/$workspaceId/datasets/$reportDatasetId/Default.UpdateDatasources" `
         -Method POST `
         -Body $updateBody
 }
